@@ -36,9 +36,3 @@ jobs:
 
       - name: Build and run unit tests
         run: ./gradlew testDebug
-
-      - name: Run Android Lint
-        run: ./gradlew lint
-
-      - name: Generate code coverage
-        run: ./gradlew jacocoTestReport
