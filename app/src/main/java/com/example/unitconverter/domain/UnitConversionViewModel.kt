@@ -7,9 +7,9 @@ import androidx.lifecycle.ViewModel
 
 class UnitConversionViewModel(): ViewModel() {
 
-
     interface ConvertibleUnit
 
+    // Holds conversion factor from Meters to Unit
     enum class LengthUnit(val toMeters: Double): ConvertibleUnit {
         METER(1.0),
         KILOMETER(1000.0),
@@ -18,6 +18,7 @@ class UnitConversionViewModel(): ViewModel() {
         FOOT(0.3048)
     }
 
+    // Holds conversion factor from Kilograms to Unit
     enum class WeightUnit(val toKilograms: Double): ConvertibleUnit {
         KILOGRAM(1.0),
         GRAM(0.001),
@@ -25,6 +26,7 @@ class UnitConversionViewModel(): ViewModel() {
         OUNCE(0.0283495)
     }
 
+    // Holds temperature enums. Conversion is done later with custom funciton.
     enum class TemperatureUnit: ConvertibleUnit {
         CELSIUS,
         FAHRENHEIT,
@@ -36,13 +38,15 @@ class UnitConversionViewModel(): ViewModel() {
     // Bottom unit text box
     var bottomUnitText by mutableStateOf("")
 
+    // Units value starts in
     var startUnits by mutableStateOf<ConvertibleUnit?>(null)
-
+    // Units that value should end in
     var endUnits by mutableStateOf<ConvertibleUnit?>(null)
 
 
-
+    // Sets text field of side not interacted with to be converted units
     fun convertUnits(sideChanged: String, startUnitString: String, endUnitString: String, measurementType: String) {
+
         // Getting a double from the text that was changed
         // Set to null if text is not a double
         var inputDouble: Double? = when (sideChanged) {
@@ -51,18 +55,21 @@ class UnitConversionViewModel(): ViewModel() {
             else -> null
         }
 
-        // If setting input to 0 if it wasn't recognized as a double
+        // Setting input to 0 if it wasn't recognized as a double (Useful for empty measurement field)
         if (inputDouble == null) {
             inputDouble = 0.0
         }
 
+        // Setting startUnits and endUnits by parsing string
         parseUnits(startUnitString, endUnitString)
 
+        // If both units are entered
         if (startUnits != null && endUnits != null) {
             // If top side was changed
             if (sideChanged == "top") {
                 // Modify bottom size
                 bottomUnitText = when (measurementType) {
+                    // Calling convert function for individual units
                     "length" -> convertLength(
                         inputDouble,
                         startUnits as LengthUnit,
@@ -113,6 +120,7 @@ class UnitConversionViewModel(): ViewModel() {
 
     }
 
+    // Parsing unit types from drop down menu strings
     fun parseUnits(startUnitString: String, endUnitString: String) {
         startUnits = when(startUnitString) {
             "m" -> LengthUnit.METER
